@@ -5,9 +5,9 @@ const PackSchema = mongoose.Schema({
     //Below is an [Array] of {ObjectIds}
     cards: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'card'
+        ref: "card"
     }]
 
 }, {timestamps : true});
 
-module.exports = mongoose.Schema('Pack', PackSchema);
+module.exports = mongoose.model('Pack', PackSchema);
