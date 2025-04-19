@@ -57,15 +57,21 @@ module.exports = {
             })
     },
 
-    deleteCard: (req, res) => {
-        Card.deleteOne({_id: req.params.id})
-            //Result will just be the system saying the count of deleted amount.
-            .then((result) => {
-                res.status(201).json(result)
-            })
-            .catch((err) => {
-                res.status(500).json({err})
-            })
+    deleteCard:  async (req, res) => {
+        try {
+            // Delete the card
+            const result = await Card.deleteOne({ _id: req.params.id });
+    
+            // Remove the card from any packs it's in
+            await Pack.updateMany(
+                { cards: req.params.id },
+                { $pull: { cards: req.params.id } }
+            );
+    
+            res.status(200).json({ message: "Card deleted and removed from packs", result });
+        } catch (err) {
+            res.status(500).json({ error: err });
+        }
     }
 
 }
