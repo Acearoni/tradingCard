@@ -1,3 +1,4 @@
+const Collection = require('../models/collection.model');
 const Pack = require('../models/pack.model');
 
 module.exports = {
@@ -10,6 +11,14 @@ module.exports = {
             }
 
             const cards = pack.cards;
+
+            const collection = await Collection.findOne();
+            if (!collection) {
+                collection = await Collection.create({ cards: cards.map(card => card._id) });
+            } else {
+                collection.cards.push(...cards.map(card => card._id));
+                await collection.save();
+            }
 
             await Pack.deleteOne({ _id: req.params.id });
 
